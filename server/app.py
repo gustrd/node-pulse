@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 # Helper to format time
 def format_time(timestamp):
-    return datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.fromtimestamp(timestamp).astimezone().strftime('%Y-%m-%d %H:%M:%S %z')
 
 def get_nodes():
     nodes = []
