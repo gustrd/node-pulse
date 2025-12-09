@@ -152,5 +152,8 @@ systemctl restart nodepulse-server
 
 echo "Server installation complete."
 echo "Ensure 'rrsync' is working."
-echo "Add client keys to /var/nodepulse/.ssh/authorized_keys like this:"
-echo 'command="/usr/local/bin/rrsync /var/nodepulse/status/",restrict ssh-ed25519 ...'
+echo "Add client keys using the helper script:"
+echo "  sudo ./add_client.sh \"<client_public_key>\""
+echo ""
+echo "Or manually add to /var/nodepulse/.ssh/authorized_keys:"
+echo '  command="/usr/local/bin/rrsync /var/nodepulse/status/",restrict ssh-ed25519 ...'
