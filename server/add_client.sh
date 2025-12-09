@@ -16,7 +16,7 @@ STATUS_DIR="/var/nodepulse/status/"
 # Get key from argument or stdin
 KEY=""
 if [ $# -ge 1 ]; then
-    KEY="$1"
+    KEY="$*"
 elif [ -p /dev/stdin ]; then
     KEY=$(cat)
 else
