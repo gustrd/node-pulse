@@ -1,0 +1,4 @@
+SERVER_HOST=nodepulse@monitor.example.com
+NODE_NAME=web-01
+KEY_PATH=/opt/nodepulse/nodepulse.key
+SCRIPT_PATH=/opt/nodepulse/generate_status.sh

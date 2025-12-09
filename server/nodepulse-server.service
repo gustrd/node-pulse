@@ -1,0 +1,14 @@
+[Unit]
+Description=Node Pulse Server
+After=network.target
+
+[Service]
+User=nodepulse
+Group=nodepulse
+WorkingDirectory=/var/nodepulse/server
+# Use the wrapper script which handles venv activation and updates
+ExecStart=/bin/bash /var/nodepulse/server/start_server.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
