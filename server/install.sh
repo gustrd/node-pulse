@@ -69,7 +69,16 @@ else
     echo "User 'nodepulse' already exists."
 fi
 
-# 4. Configure SSHD (Explicit Security)
+
+# 4. Directory structure (Create keys before restarting SSHD)
+mkdir -p /var/nodepulse/{status,server,venv}
+mkdir -p /var/nodepulse/.ssh
+touch /var/nodepulse/.ssh/authorized_keys
+chmod 700 /var/nodepulse/.ssh
+chmod 600 /var/nodepulse/.ssh/authorized_keys
+chown -R nodepulse:nodepulse /var/nodepulse
+
+# 5. Configure SSHD (Explicit Security)
 SSHD_CONFIG="/etc/ssh/sshd_config"
 if [ -f "$SSHD_CONFIG" ]; then
     if ! grep -q "Match User nodepulse" "$SSHD_CONFIG"; then
@@ -90,9 +99,9 @@ EOF
         
         # Reload/Restart SSHD
         if command -v systemctl &> /dev/null; then
-            systemctl restart sshd || systemctl restart ssh || echo "Warning: Could not restart sshd. Please restart manually."
+            systemctl restart sshd 2>/dev/null || systemctl restart ssh || echo "Warning: Could not restart sshd. Please restart manually."
         elif command -v service &> /dev/null; then
-            service sshd restart || service ssh restart || echo "Warning: Could not restart sshd. Please restart manually."
+            service sshd restart 2>/dev/null || service ssh restart || echo "Warning: Could not restart sshd. Please restart manually."
         else
              echo "Warning: Could not restart sshd. Please restart existing ssh daemon manually."
         fi
@@ -103,14 +112,6 @@ EOF
 else
     echo "Warning: $SSHD_CONFIG not found. Skipping explicit SSHD config."
 fi
-
-# 5. Directory structure
-mkdir -p /var/nodepulse/{status,server,venv}
-mkdir -p /var/nodepulse/.ssh
-touch /var/nodepulse/.ssh/authorized_keys
-chmod 700 /var/nodepulse/.ssh
-chmod 600 /var/nodepulse/.ssh/authorized_keys
-chown -R nodepulse:nodepulse /var/nodepulse
 
 # 6. Deploy App and venv
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
