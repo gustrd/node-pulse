@@ -20,7 +20,7 @@ if [ ! -x "$SCRIPT_PATH" ]; then
     exit 1
 fi
 
-STATUS_FILE="/tmp/nodepulse-status.txt"
+STATUS_FILE="/home/gustrd/nodepulse-status.txt"
 
 # Generate status
 "$SCRIPT_PATH" > "$STATUS_FILE"
@@ -28,4 +28,4 @@ STATUS_FILE="/tmp/nodepulse-status.txt"
 # Push to server using rsync
 # We use -e to specify the ssh key and options
 # Since the server uses rrsync pointing to /var/nodepulse/status/, we push to the relative root "."
-rsync -a -e "ssh -i $KEY_PATH -o StrictHostKeyChecking=accept-new" "$STATUS_FILE" "$SERVER_HOST:$NODE_NAME.txt"
+rsync -a -e "ssh -vvv -i $KEY_PATH -o StrictHostKeyChecking=accept-new" "$STATUS_FILE" "$SERVER_HOST:$NODE_NAME.txt"

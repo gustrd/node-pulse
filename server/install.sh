@@ -72,6 +72,8 @@ fi
 
 # 4. Directory structure (Create keys before restarting SSHD)
 mkdir -p /var/nodepulse/{status,server,venv}
+# Secure permissions for StrictModes
+chmod 755 /var/nodepulse
 mkdir -p /var/nodepulse/.ssh
 touch /var/nodepulse/.ssh/authorized_keys
 chmod 700 /var/nodepulse/.ssh
