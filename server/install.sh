@@ -120,6 +120,11 @@ if [ -f "$SCRIPT_DIR/app.py" ]; then
     cp "$SCRIPT_DIR/app.py" /var/nodepulse/server/
     cp "$SCRIPT_DIR/config.py" /var/nodepulse/server/
     cp "$SCRIPT_DIR/start_server.sh" /var/nodepulse/server/
+    
+    # Fix line endings (CRLF -> LF)
+    sed -i 's/\r$//' /var/nodepulse/server/*.sh
+    sed -i 's/\r$//' /var/nodepulse/server/*.py
+    
     chmod +x /var/nodepulse/server/*.sh
     
     mkdir -p /var/nodepulse/server/templates

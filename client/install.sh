@@ -30,6 +30,9 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 if [ -f "$SCRIPT_DIR/push.sh" ]; then
     cp "$SCRIPT_DIR/push.sh" /opt/nodepulse/
     cp "$SCRIPT_DIR/generate_status.sh" /opt/nodepulse/
+    
+    # Fix line endings (CRLF -> LF)
+    sed -i 's/\r$//' /opt/nodepulse/*.sh
     chmod +x /opt/nodepulse/*.sh
     
     if [ ! -f /opt/nodepulse/config ]; then
@@ -37,6 +40,9 @@ if [ -f "$SCRIPT_DIR/push.sh" ]; then
     else
         echo "Config file already exists at /opt/nodepulse/config, skipping overwrite."
     fi
+    
+    # Fix config line endings
+    sed -i 's/\r$//' /opt/nodepulse/config
 else
     echo "Error: Source files not found in $SCRIPT_DIR"
     exit 1
