@@ -71,7 +71,7 @@ else
 fi
 
 # 4. Cron job
-CRON_JOB="* * * * * root /opt/nodepulse/push.sh >> /var/log/nodepulse.log 2>&1"
+CRON_JOB="* * * * * root bash -l /opt/nodepulse/push.sh >> /var/log/nodepulse.log 2>&1"
 CRON_FILE="/etc/cron.d/nodepulse"
 
 if [ ! -f "$CRON_FILE" ]; then
