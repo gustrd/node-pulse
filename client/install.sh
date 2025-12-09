@@ -29,9 +29,8 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 if [ -f "$SCRIPT_DIR/push.sh" ]; then
     cp "$SCRIPT_DIR/push.sh" /opt/nodepulse/
-    chmod +x /opt/nodepulse/push.sh
     cp "$SCRIPT_DIR/generate_status.sh" /opt/nodepulse/
-    chmod +x /opt/nodepulse/generate_status.sh
+    chmod +x /opt/nodepulse/*.sh
     
     if [ ! -f /opt/nodepulse/config ]; then
         cp "$SCRIPT_DIR/config" /opt/nodepulse/

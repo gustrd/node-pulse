@@ -120,7 +120,7 @@ if [ -f "$SCRIPT_DIR/app.py" ]; then
     cp "$SCRIPT_DIR/app.py" /var/nodepulse/server/
     cp "$SCRIPT_DIR/config.py" /var/nodepulse/server/
     cp "$SCRIPT_DIR/start_server.sh" /var/nodepulse/server/
-    chmod +x /var/nodepulse/server/start_server.sh
+    chmod +x /var/nodepulse/server/*.sh
     
     mkdir -p /var/nodepulse/server/templates
     cp "$SCRIPT_DIR/templates/dashboard.html" /var/nodepulse/server/templates/
