@@ -9,15 +9,47 @@ fi
 echo "Installing Node Pulse Client..."
 
 # 0. Check dependencies
-if ! command -v rsync &> /dev/null; then
-    echo "rsync not found. Installing..."
+ensure_dependency() {
+    local cmd=$1
+    local pkg_apt=$2
+    local pkg_yum=$3
+    
+    if ! command -v "$cmd" &> /dev/null; then
+        echo "$cmd not found. Installing..."
+        if command -v apt-get &> /dev/null; then
+            apt-get update && apt-get install -y "$pkg_apt"
+        elif command -v yum &> /dev/null; then
+            yum install -y "$pkg_yum"
+        else
+            echo "Error: $cmd required but not found and no package manager detected."
+            exit 1
+        fi
+    fi
+}
+
+ensure_dependency "rsync" "rsync" "rsync"
+
+# Check for cron explicitly to ensure service is running
+if ! command -v cron &> /dev/null && ! command -v crond &> /dev/null; then
+    echo "cron not found. Installing..."
     if command -v apt-get &> /dev/null; then
-        apt-get update && apt-get install -y rsync
+        apt-get update && apt-get install -y cron
+        systemctl enable --now cron
     elif command -v yum &> /dev/null; then
-        yum install -y rsync
+        yum install -y cronie
+        systemctl enable --now crond
     else
-        echo "Error: rsync required but not found and no package manager detected."
+        echo "Error: cron required but not found and no package manager detected."
         exit 1
+    fi
+else
+    # Ensure it's running if it was already installed
+    if command -v systemctl &> /dev/null; then
+        if command -v apt-get &> /dev/null; then
+            systemctl enable --now cron
+        elif command -v yum &> /dev/null; then
+            systemctl enable --now crond
+        fi
     fi
 fi
 
@@ -71,7 +103,7 @@ else
 fi
 
 # 4. Cron job
-CRON_JOB="* * * * * root bash -l /opt/nodepulse/push.sh >> /var/log/nodepulse.log 2>&1"
+CRON_JOB="* * * * * root bash /opt/nodepulse/push.sh >> /var/log/nodepulse.log 2>&1"
 CRON_FILE="/etc/cron.d/nodepulse"
 
 if [ ! -f "$CRON_FILE" ]; then
