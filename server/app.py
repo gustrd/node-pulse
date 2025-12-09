@@ -10,6 +10,27 @@ app = Flask(__name__)
 def format_time(timestamp):
     return datetime.fromtimestamp(timestamp).astimezone().strftime('%Y-%m-%d %H:%M:%S %z')
 
+# Helper to format time ago
+def format_time_ago(seconds):
+    if seconds < 60:
+        val = int(seconds)
+        unit = "second" if val == 1 else "seconds"
+        return f"{val} {unit} ago"
+    minutes = seconds / 60
+    if minutes < 60:
+        val = int(minutes)
+        unit = "minute" if val == 1 else "minutes"
+        return f"{val} {unit} ago"
+    hours = minutes / 60
+    if hours < 24:
+        val = int(hours)
+        unit = "hour" if val == 1 else "hours"
+        return f"{val} {unit} ago"
+    days = hours / 24
+    val = int(days)
+    unit = "day" if val == 1 else "days"
+    return f"{val} {unit} ago"
+
 def get_nodes():
     nodes = []
     if not os.path.exists(config.STATUS_DIR):
@@ -39,7 +60,7 @@ def get_nodes():
                 'name': node_name,
                 'content': content,
                 'last_updated': format_time(mtime),
-                'seconds_ago': int(time_since_update),
+                'time_ago': format_time_ago(time_since_update),
                 'status_class': status_class
             })
         except Exception as e:

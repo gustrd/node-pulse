@@ -37,6 +37,8 @@ if [ -f "$SCRIPT_DIR/push.sh" ]; then
     
     if [ ! -f /opt/nodepulse/config ]; then
         cp "$SCRIPT_DIR/config" /opt/nodepulse/
+        # Update NODE_NAME to match actual hostname
+        sed -i "s/^NODE_NAME=.*/NODE_NAME=$(hostname)/" /opt/nodepulse/config
     else
         echo "Config file already exists at /opt/nodepulse/config, skipping overwrite."
     fi
@@ -60,7 +62,7 @@ else
 fi
 
 # 4. Cron job
-CRON_JOB="* * * * * /opt/nodepulse/push.sh >> /var/log/nodepulse.log 2>&1"
+CRON_JOB="* * * * * root /opt/nodepulse/push.sh >> /var/log/nodepulse.log 2>&1"
 CRON_FILE="/etc/cron.d/nodepulse"
 
 if [ ! -f "$CRON_FILE" ]; then
