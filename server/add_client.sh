@@ -46,14 +46,29 @@ if [ ! -f "$AUTH_KEYS" ]; then
     exit 1
 fi
 
-# Check if key is already there (matching the unique key hash part)
-# SSH keys are usually "type key comment". We rely on the key part (2nd field).
-KEY_HASH=$(echo "$KEY" | awk '{print $2}')
+# Check if key is already there using fingerprints
+# This handles cases where keys have options or comments, and prevents false negatives/positives
+TMP_KEY=$(mktemp)
+echo "$KEY" > "$TMP_KEY"
 
-if grep -q "$KEY_HASH" "$AUTH_KEYS"; then
+# Get fingerprint of the new key
+# Output format usually: "BITS FINGERPRINT COMMENT (TYPE)"
+NEW_FINGERPRINT=$(ssh-keygen -l -f "$TMP_KEY" | awk '{print $2}')
+
+if [ -z "$NEW_FINGERPRINT" ]; then
+    echo "Error: Invalid SSH key provided. Could not generate fingerprint."
+    rm -f "$TMP_KEY"
+    exit 1
+fi
+
+# Check against existing keys in authorized_keys using their fingerprints
+if ssh-keygen -l -f "$AUTH_KEYS" 2>/dev/null | grep -Fq "$NEW_FINGERPRINT"; then
     echo "Warning: This key is already present in authorized_keys."
+    rm -f "$TMP_KEY"
     exit 0
 fi
+
+rm -f "$TMP_KEY"
 
 # Construct the authorized_keys line
 # We restricts the key to only run rrsync on the status directory
