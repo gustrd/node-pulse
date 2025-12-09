@@ -37,6 +37,15 @@ if [ -f "$SCRIPT_DIR/push.sh" ]; then
     
     if [ ! -f /opt/nodepulse/config ]; then
         cp "$SCRIPT_DIR/config" /opt/nodepulse/
+        
+        # Ask for Server IP/Hostname
+        read -p "Enter the server IP or Hostname (e.g., 192.168.1.100): " SERVER_IP
+        
+        # Update Config
+        if [ -n "$SERVER_IP" ]; then
+             sed -i "s|^SERVER_HOST=.*|SERVER_HOST=nodepulse@$SERVER_IP|" /opt/nodepulse/config
+        fi
+
         # Update NODE_NAME to match actual hostname
         sed -i "s/^NODE_NAME=.*/NODE_NAME=$(hostname)/" /opt/nodepulse/config
     else
@@ -78,4 +87,6 @@ echo "---------------------------------------------------"
 echo "Public Key to add to Server:"
 cat "${KEY_PATH}.pub"
 echo "---------------------------------------------------"
-echo "Please edit /opt/nodepulse/config with the correct SERVER_HOST"
+echo "Next steps:"
+echo "1. Add the public key above to the server's ~/.ssh/authorized_keys"
+echo "2. Verify /opt/nodepulse/config settings if needed"
