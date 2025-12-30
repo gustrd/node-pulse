@@ -26,11 +26,12 @@ Node Pulse is a lightweight, secure monitoring system where distributed machines
 ```
 /
 ├── client/
-│   ├── install.sh         # Client installation script (Linux)
-│   ├── install-termux.sh  # Client installation script (Android/Termux)
-│   ├── push.sh            # Main script run by cron
-│   ├── generate_status.sh # Status generation logic
-│   └── config             # Client configuration
+│   ├── install.sh              # Client installation script (Linux)
+│   ├── install-termux.sh       # Client installation script (Android/Termux)
+│   ├── push.sh                 # Main script run by cron
+│   ├── generate_status.sh      # Status generation logic (Linux)
+│   ├── generate_status_termux.sh # Status generation logic (Termux)
+│   └── config                  # Client configuration
 └── server/
     ├── install.sh         # Server installation script
     ├── add_client.sh      # Script to add client public keys

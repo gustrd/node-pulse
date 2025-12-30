@@ -30,7 +30,12 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
 if [ -f "$SCRIPT_DIR/push.sh" ]; then
     cp "$SCRIPT_DIR/push.sh" "$NODEPULSE_DIR/"
-    cp "$SCRIPT_DIR/generate_status.sh" "$NODEPULSE_DIR/"
+    # Use Termux-specific status script if available, otherwise fall back to generic
+    if [ -f "$SCRIPT_DIR/generate_status_termux.sh" ]; then
+        cp "$SCRIPT_DIR/generate_status_termux.sh" "$NODEPULSE_DIR/generate_status.sh"
+    else
+        cp "$SCRIPT_DIR/generate_status.sh" "$NODEPULSE_DIR/"
+    fi
 
     # Fix line endings (CRLF -> LF)
     sed -i 's/\r$//' "$NODEPULSE_DIR"/*.sh
