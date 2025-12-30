@@ -64,6 +64,7 @@ if [ -f "$SCRIPT_DIR/push.sh" ]; then
     # Update push.sh to use Termux paths
     sed -i "s|/opt/nodepulse|$NODEPULSE_DIR|g" "$NODEPULSE_DIR/push.sh"
     sed -i "s|/var/log/nodepulse.log|$NODEPULSE_DIR/nodepulse.log|g" "$NODEPULSE_DIR/push.sh"
+    sed -i "s|/tmp/nodepulse-status.txt|$NODEPULSE_DIR/nodepulse-status.txt|g" "$NODEPULSE_DIR/push.sh"
 
     # Update generate_status.sh to use Termux paths
     sed -i "s|/opt/nodepulse|$NODEPULSE_DIR|g" "$NODEPULSE_DIR/generate_status.sh"
