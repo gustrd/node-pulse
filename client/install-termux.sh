@@ -20,6 +20,7 @@ ensure_dependency() {
 ensure_dependency "rsync" "rsync"
 ensure_dependency "crond" "cronie"
 ensure_dependency "ssh-keygen" "openssh"
+ensure_dependency "jq" "jq"
 
 # 1. Create directory in Termux home
 NODEPULSE_DIR="$HOME/.nodepulse"
