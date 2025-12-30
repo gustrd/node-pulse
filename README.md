@@ -6,17 +6,17 @@ Node Pulse is a lightweight, secure monitoring system where distributed machines
 - **Client**: Runs a bash script via cron every minute to generate and push status updates (via Rsync/SSH).
 - **Server**: Flask application that renders a real-time dashboard based on received status files. Uses `rrsync` (restricted rsync) and a dedicated `nodepulse` user with layered SSH security restrictions.
 - **Security**: Multi-layer security model with SSHD config restrictions and per-key command limitations.
-- **Dashboard**: Auto-refreshing web interface with visual status indicators (green/yellow/red) based on update freshness.
+- **Dashboard**: Auto-refreshing web interface with visual status indicators (green/grey/black) based on update freshness.
 
 ## Features
 
 ✅ **Automated Installation** - Single-script setup for both client and server  
 ✅ **Interactive Configuration** - Client installer prompts for server details  
 ✅ **Simplified Key Management** - `add_client.sh` script automates client authorization  
-✅ **Visual Status Indicators** - Color-coded dashboard with configurable thresholds:
-  - 🟢 **Normal**: Updated within 5 minutes
-  - 🟡 **Warning**: 5-15 minutes since last update
-  - 🔴 **Critical**: Over 15 minutes since last update  
+✅ **Visual Status Indicators** - Color-coded left border with configurable thresholds:
+  - **Green**: Online - Updated within 5 minutes
+  - **Grey**: Late - 5-15 minutes since last update
+  - **Black**: Very Late - Over 15 minutes since last update  
 ✅ **Relative Time Display** - Human-readable timestamps ("2 minutes ago")  
 ✅ **Auto-Refresh Dashboard** - Refreshes every 30 seconds  
 ✅ **Timezone-Aware** - Server displays times in its local timezone  
@@ -125,8 +125,8 @@ Edit `/var/nodepulse/server/config.py` to adjust status thresholds:
 
 ```python
 STATUS_DIR = "/var/nodepulse/status"
-STALE_WARNING_SECONDS = 300   # 5 minutes - Yellow indicator
-STALE_CRITICAL_SECONDS = 900  # 15 minutes - Red indicator
+STALE_WARNING_SECONDS = 300   # 5 minutes - Grey indicator (late)
+STALE_CRITICAL_SECONDS = 900  # 15 minutes - Black indicator (very late)
 ```
 
 After changing configuration, restart the service:
@@ -162,7 +162,7 @@ Access the dashboard at `http://<server-ip>:8080`
 
 **Dashboard Features:**
 - **Auto-refresh**: Updates every 30 seconds
-- **Status Indicators**: Color-coded dots and row borders
+- **Status Indicators**: Color-coded left border (green=online, grey=late, black=very late)
 - **Relative Time**: "2 minutes ago" format for easy scanning
 - **Node Details**: Always visible status content for each node
 - **Sorted Display**: Alphabetically ordered by node name
