@@ -26,7 +26,8 @@ Node Pulse is a lightweight, secure monitoring system where distributed machines
 ```
 /
 ├── client/
-│   ├── install.sh         # Client installation script
+│   ├── install.sh         # Client installation script (Linux)
+│   ├── install-termux.sh  # Client installation script (Android/Termux)
 │   ├── push.sh            # Main script run by cron
 │   ├── generate_status.sh # Status generation logic
 │   └── config             # Client configuration
@@ -81,6 +82,38 @@ Node Pulse is a lightweight, secure monitoring system where distributed machines
 4.  **Manual Configuration** (if needed):
     - Edit `/opt/nodepulse/config` to change `SERVER_HOST` or `NODE_NAME`.
 
+### Client Setup (Termux/Android)
+
+For Android devices using Termux:
+
+1.  Navigate to the `client` directory.
+2.  Run the install script (no root required):
+    ```bash
+    ./install-termux.sh
+    ```
+3.  The script will:
+    - Install required packages via `pkg` (`rsync`, `cronie`, `openssh`).
+    - Install scripts to `~/.nodepulse`.
+    - Generate an SSH key pair (`~/.nodepulse/nodepulse.key`).
+    - **Prompt for server IP/hostname** and configure it automatically.
+    - Auto-detect device name from Android properties.
+    - Setup a user crontab to run every minute.
+    - Start `crond` daemon.
+    - Display the public key for server authorization.
+
+4.  **Keep Termux running** with a wakelock to ensure cron jobs execute:
+    ```bash
+    termux-wake-lock
+    ```
+
+5.  **Manual Configuration** (if needed):
+    - Edit `~/.nodepulse/config` to change `SERVER_HOST` or `NODE_NAME`.
+
+6.  **If Termux restarts**, start crond again:
+    ```bash
+    crond
+    ```
+
 ### Connecting Client to Server
 
 After installing the client, authorize its key on the server using the provided script:
@@ -89,7 +122,11 @@ After installing the client, authorize its key on the server using the provided 
 
 1.  **On the Client**: Copy the public key:
     ```bash
+    # Linux
     cat /opt/nodepulse/nodepulse.key.pub
+
+    # Termux
+    cat ~/.nodepulse/nodepulse.key.pub
     ```
 
 2.  **On the Server**: Use the `add_client.sh` script:
@@ -136,7 +173,7 @@ sudo systemctl restart nodepulse-server
 
 ### Client Configuration
 
-Edit `/opt/nodepulse/config`:
+Edit `/opt/nodepulse/config` (Linux) or `~/.nodepulse/config` (Termux):
 
 ```bash
 SERVER_HOST=nodepulse@192.168.1.100  # Server address
@@ -145,7 +182,7 @@ NODE_NAME=web-server-01              # Display name
 
 ### Custom Status Script
 
-Customize the status information by editing `/opt/nodepulse/generate_status.sh`:
+Customize the status information by editing `/opt/nodepulse/generate_status.sh` (Linux) or `~/.nodepulse/generate_status.sh` (Termux):
 
 ```bash
 #!/bin/bash
@@ -173,17 +210,29 @@ Access the dashboard at `http://<server-ip>:8080`
 
 1. **Check cron logs**:
    ```bash
+   # Linux
    tail -f /var/log/nodepulse.log
+
+   # Termux
+   tail -f ~/.nodepulse/nodepulse.log
    ```
 
 2. **Test manual push**:
    ```bash
+   # Linux
    sudo bash /opt/nodepulse/push.sh
+
+   # Termux
+   bash ~/.nodepulse/push.sh
    ```
 
 3. **Verify SSH key authorization**:
    ```bash
+   # Linux
    ssh -i /opt/nodepulse/nodepulse.key nodepulse@<server-ip>
+
+   # Termux
+   ssh -i ~/.nodepulse/nodepulse.key nodepulse@<server-ip>
    ```
    Should see: `This rrsync supports protocol versions 27 to 30`
 
@@ -214,6 +263,34 @@ Access the dashboard at `http://<server-ip>:8080`
 2. **Check cron file**:
    ```bash
    cat /etc/cron.d/nodepulse
+   ```
+
+### Termux Client Issues
+
+1. **Check if crond is running**:
+   ```bash
+   pgrep crond
+   ```
+   If not running, start it: `crond`
+
+2. **Check logs**:
+   ```bash
+   tail -f ~/.nodepulse/nodepulse.log
+   ```
+
+3. **Test manual push**:
+   ```bash
+   bash ~/.nodepulse/push.sh
+   ```
+
+4. **Verify crontab**:
+   ```bash
+   crontab -l
+   ```
+
+5. **Ensure wakelock is active**:
+   ```bash
+   termux-wake-lock
    ```
 
 ## Security Model
